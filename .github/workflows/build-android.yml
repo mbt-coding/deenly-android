@@ -1,0 +1,51 @@
+name: Build Deenly (APK and AAB)
+# Builds a debug APK and a release AAB in the cloud, so you don't need Android Studio.
+# Push this folder as the root of a GitHub repository, then run the workflow (Actions tab > Build Deenly > Run workflow).
+# To sign the release AAB for Google Play, add these repository secrets:
+#   KEYSTORE_B64 (base64 of your .jks file), KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: android-actions/setup-android@v3
+      - run: npm install
+      - run: npx cap add android
+      - run: python3 patch_android.py
+      - run: npx cap sync android
+      - name: Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Release AAB (signed when secrets are set)
+        working-directory: android
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/deenly.jks"
+            ./gradlew bundleRelease \
+              -Pandroid.injected.signing.store.file="$RUNNER_TEMP/deenly.jks" \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+          else
+            echo "No signing secrets found: building an UNSIGNED AAB (Google Play will not accept it)."
+            ./gradlew bundleRelease
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deenly-android
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/bundle/release/*.aab
