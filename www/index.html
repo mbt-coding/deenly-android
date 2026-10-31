@@ -181,6 +181,87 @@ textarea{font:inherit;color:var(--fg);background:var(--in);border:1px solid tran
 .cbl{display:block;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:260px;overflow:auto;border-radius:16px;padding:6px;background:rgba(12,58,140,.98);color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow:0 18px 40px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(-6px) scale(.98);transform-origin:top;transition:opacity .2s,transform .35s var(--ease),visibility .2s;overscroll-behavior:contain}.cbl.on{opacity:1;visibility:visible;transform:none}
 .cbo{display:flex;flex-direction:column;padding:10px 12px;border-radius:12px;cursor:pointer;text-align:start}.cbo small{color:rgba(255,255,255,.85)}.cbo:hover,.cbo.act{background:rgba(255,255,255,.2)}.cbm{display:block;padding:10px 12px;color:rgba(255,255,255,.9)}
 html[data-theme=light] .cbl{background:rgba(255,255,255,.99);color:#0b0d1a;border-color:rgba(0,0,0,.12)}html[data-theme=light] .cbo small,html[data-theme=light] .cbm{color:#2e3347}html[data-theme=light] .cbo:hover,html[data-theme=light] .cbo.act{background:rgba(0,80,200,.12)}.ob .cbl{background:rgba(8,40,110,.99)!important;color:#fff!important}.ob .cbo small,.ob .cbm{color:rgba(255,255,255,.9)!important}.ob label{text-align:start;font-size:14px}
+
+/* ---- Adaptive mobile layout: Android display/font scaling ---- */
+html{width:100%;max-width:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{width:100%;min-width:0;max-width:100%;font-size:clamp(14px,3.8vw,16px);overflow-x:hidden}
+main{width:100%;max-width:480px;margin-inline:auto;padding:
+ calc(8px + env(safe-area-inset-top))
+ clamp(8px,3vw,14px)
+ calc(104px + env(safe-area-inset-bottom))}
+.page,.card,details,.hero,.np,.top,.hdr{min-width:0;max-width:100%}
+.card,details{overflow-wrap:anywhere}
+.card img,.card video,.card canvas,.card iframe{max-width:100%}
+.row,.cdi,.sg,.lk,.ad,.blk{min-width:0}
+.row>*{min-width:0}
+.row span:last-child{text-align:end;overflow-wrap:anywhere}
+.f{min-width:0}
+.f>*{max-width:100%}
+input,select,textarea{max-width:100%;min-width:0}
+input[type=range]{width:min(150px,42vw)}
+#tabs{min-width:0}
+#tabs button{min-width:0;overflow-wrap:anywhere}
+.tiles,.qgrid,#rmg,#lks{grid-template-columns:repeat(2,minmax(0,1fr))}
+nav{
+ width:calc(100% - 16px)!important;
+ max-width:480px;
+ left:50%;
+ bottom:calc(6px + env(safe-area-inset-bottom));
+ padding:4px;
+ gap:1px;
+}
+nav button{
+ flex:1 1 0;
+ min-width:0;
+ min-height:clamp(52px,15vw,60px);
+ padding:6px 1px;
+ gap:3px;
+ font-size:clamp(9px,2.7vw,11px);
+ line-height:1.15;
+ white-space:normal;
+ overflow-wrap:anywhere;
+}
+nav .ic{width:clamp(19px,6vw,24px);height:clamp(19px,6vw,24px);flex:none}
+@media(max-width:380px){
+ .card,details{padding:13px;border-radius:20px}
+ .hero{gap:6px;padding:14px 8px}
+ .np{grid-template-columns:44px minmax(0,1fr) 1px minmax(0,1fr);gap:8px;padding:12px 9px}
+ .npi{width:44px;height:44px}
+ .npm b{font-size:clamp(16px,5vw,20px)}
+ #cd{font-size:clamp(18px,6vw,23px)!important}
+ .pt small,.pt b{font-size:clamp(9px,2.8vw,11px)}
+ .ptr{padding:8px 1px}
+ .pt{padding-inline:0}
+ nav button{font-size:9px;letter-spacing:-.035em}
+}
+@media(max-width:340px){
+ .tiles,.qgrid,#rmg,#lks{grid-template-columns:minmax(0,1fr)}
+ .hdr{grid-template-columns:44px minmax(0,1fr) auto;gap:5px}
+ .hdr .brand{font-size:15px;letter-spacing:.08em}
+ .chip2{max-width:112px;padding-inline:7px}
+ nav button{font-size:8.5px}
+}
+@media(max-height:620px){
+ main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+ nav button{min-height:50px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+
+/* Deenly is intentionally mobile/tablet-first on every screen size.
+   Desktop-width monitors show the same compact tablet app, never a PC dashboard. */
+html,body{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
+body{display:block;margin:0}
+main{width:100%;max-width:720px;margin:0 auto;padding-left:clamp(10px,2.5vw,18px);padding-right:clamp(10px,2.5vw,18px);box-sizing:border-box}
+.page{width:100%;max-width:100%;margin-inline:auto}
+nav{position:fixed!important;left:50%!important;right:auto!important;transform:translateX(-50%);width:calc(100% - 20px)!important;max-width:700px!important}
+@media(min-width:600px){
+ main{padding-top:calc(14px + env(safe-area-inset-top));padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+ .tiles,.qgrid,#rmg,#lks{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style></head><body>
 <div id="sky" aria-hidden="true"><div id="ph"></div><div id="ph2"></div></div>
 <main>
